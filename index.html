@@ -1,181 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Happy Birthday 🎉</title>
+<meta charset="UTF-8">
+<title>Happy Birthday Dad 🎉</title>
 
 <style>
+  * { box-sizing: border-box; }
+
   body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: radial-gradient(circle at top, #0f172a, #020617);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #020617;
     color: white;
+    overflow: hidden;
+  }
+
+  .screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.2s ease;
+  }
+
+  .screen.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ---------- SCREEN 1 : CAKE ---------- */
+
+  .cake {
+    font-size: 120px;
+    cursor: pointer;
+    transition: transform 0.4s ease;
+  }
+
+  .cake:hover {
+    transform: scale(1.05);
+  }
+
+  .hint {
+    margin-top: 20px;
+    opacity: 0.8;
+    font-size: 1.1rem;
+  }
+
+  /* ---------- SCREEN 2 : SLIDESHOW ---------- */
+
+  #slideshow {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.6);
+    transition: opacity 1.2s ease;
+  }
+
+  .overlay {
+    position: relative;
     text-align: center;
-    overflow-x: hidden;
-    animation: pageFade 1.6s ease;
-  }
-
-  @keyframes pageFade {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  .container {
-    max-width: 720px;
-    margin: auto;
-    padding: 70px 20px;
+    z-index: 2;
+    animation: fadeUp 1.6s ease;
   }
 
   h1 {
-    font-size: 2.6rem;
-    animation: fadeDown 1.2s ease;
-  }
-
-  .photo {
-    width: 240px;
-    height: 240px;
-    object-fit: cover;
-    border-radius: 50%;
-    margin: 30px 0;
-    box-shadow: 0 0 40px rgba(56,189,248,0.4);
-    transition: opacity 1s ease;
-  }
-
-  .card {
-    background: rgba(30,41,59,0.85);
-    padding: 34px;
-    border-radius: 22px;
-    margin-top: 35px;
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 1.2s ease;
-  }
-
-  .card.show {
-    opacity: 1;
-    transform: translateY(0);
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    margin-bottom: 20px;
   }
 
   button {
-    margin-top: 26px;
-    padding: 15px 28px;
+    padding: 14px 26px;
     font-size: 16px;
-    border-radius: 16px;
+    border-radius: 14px;
     border: none;
     background: linear-gradient(135deg, #38bdf8, #818cf8);
     color: #020617;
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
-  button:hover {
-    transform: scale(1.08);
-    box-shadow: 0 10px 30px rgba(56,189,248,0.4);
+  /* ---------- SCREEN 3 : MESSAGE ---------- */
+
+  .message {
+    max-width: 800px;
+    padding: 40px;
+    background: rgba(30,41,59,0.85);
+    border-radius: 22px;
+    animation: fadeUp 1.6s ease;
   }
 
-  #gift {
-    margin-top: 22px;
+  .message p {
     font-size: 1.05rem;
-    opacity: 0;
-    transition: opacity 1.4s ease;
+    line-height: 1.6;
   }
 
-  #gift.show {
-    opacity: 1;
-  }
+  /* ---------- CONFETTI ---------- */
 
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-25px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Confetti */
   .confetti {
     position: fixed;
     top: -10px;
     width: 10px;
     height: 10px;
-    animation: fall linear infinite;
-    z-index: 999;
+    animation: fall linear forwards;
+    z-index: 9999;
   }
 
   @keyframes fall {
-    to { transform: translateY(110vh) rotate(360deg); }
+    to {
+      transform: translateY(110vh) rotate(360deg);
+    }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-  <h1>🎉 Happy Birthday Dad 🎉</h1>
+<!-- SCREEN 1 -->
+<div class="screen active" id="screen1">
+  <div class="cake" onclick="blowCandle()">🎂</div>
+  <div class="hint">Click the cake to blow the candle 🕯️</div>
+</div>
 
-  <!-- Slideshow image -->
-  <img id="slideshow" src="images/1.jpeg" class="photo">
+<!-- SCREEN 2 -->
+<div class="screen" id="screen2">
+  <div id="slideshow"></div>
+  <div class="overlay">
+    <h1>Happy Birthday Dad 🎉</h1>
+    <button onclick="showMessage()">Read message 💌</button>
+  </div>
+</div>
 
-  <div class="card" id="card">
-    <p>This year I wanted to do something a little different.</p>
-    <p>Something for your future 📈</p>
-
-    <button onclick="reveal()">Reveal your gift 🎁</button>
-
-    <p id="gift">
-      I bought you shares in a tech company I know you’ll love ❤️
+<!-- SCREEN 3 -->
+<div class="screen" id="screen3">
+  <div class="message">
+    <p>
+      I hope you're having a great day. We are all so grateful to have you in our
+      lives and you make our happy memories and dreams come true.
+    </p>
+    <p>
+      You are nothing short of amazing, determined, funny, lovely to have around
+      and an inspiration.
+    </p>
+    <p>
+      We want to keep seeing you happy, cracking bad jokes and making us all laugh.
+      So keep spreading your cheer and being the fab person you are!
+    </p>
+    <p>
+      Happy Birthday once again and cheers to another memorable year of still being
+      under 50! 🥂
     </p>
   </div>
 </div>
 
 <script>
-  /* Card entrance */
-  setTimeout(() => {
-    document.getElementById("card").classList.add("show");
-  }, 1200);
+  const screens = [
+    document.getElementById("screen1"),
+    document.getElementById("screen2"),
+    document.getElementById("screen3")
+  ];
 
-  /* Slideshow logic */
+  function goTo(n) {
+    screens.forEach(s => s.classList.remove("active"));
+    screens[n].classList.add("active");
+  }
+
+  /* ---------- CAKE ACTION ---------- */
+  const music = document.getElementById("music");
+
+  function blowCandle() {
+    goTo(1);
+
+    music.volume = 0;
+    music.play();
+
+    let v = 0;
+    const fade = setInterval(() => {
+      if (v < 0.5) {
+        v += 0.02;
+        music.volume = v;
+      } else clearInterval(fade);
+    }, 120);
+  }
+
+  /* ---------- SLIDESHOW ---------- */
+  const slide = document.getElementById("slideshow");
   let current = 1;
   const total = 17;
-  const slide = document.getElementById("slideshow");
+
+  slide.style.backgroundImage = "url(images/1.jpeg)";
 
   setInterval(() => {
     current = current % total + 1;
     slide.style.opacity = 0;
 
     setTimeout(() => {
-      slide.src = `images/${current}.jpeg`;
+      slide.style.backgroundImage = `url(images/${current}.jpeg)`;
       slide.style.opacity = 1;
     }, 600);
-  }, 3000);
+  }, 3500);
 
-  /* Reveal action */
-  const music = document.getElementById("music");
-
-  function reveal() {
-    document.getElementById("gift").classList.add("show");
-
-    // Start music with fade-in
-    music.volume = 0;
-    music.play();
-
-    let vol = 0;
-    const fade = setInterval(() => {
-      if (vol < 0.5) {
-        vol += 0.02;
-        music.volume = vol;
-      } else {
-        clearInterval(fade);
-      }
-    }, 120);
-
+  /* ---------- MESSAGE + CONFETTI ---------- */
+  function showMessage() {
+    goTo(2);
     launchConfetti();
   }
 
-  /* Confetti */
   function launchConfetti() {
-    for (let i = 0; i < 140; i++) {
+    for (let i = 0; i < 180; i++) {
       const c = document.createElement("div");
       c.className = "confetti";
       c.style.left = Math.random() * 100 + "vw";
-      c.style.background = `hsl(${Math.random() * 360},100%,60%)`;
+      c.style.background = `hsl(${Math.random()*360},100%,60%)`;
       c.style.animationDuration = Math.random() * 3 + 2 + "s";
       document.body.appendChild(c);
       setTimeout(() => c.remove(), 5000);
