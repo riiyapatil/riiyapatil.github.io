@@ -1,44 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Happy Birthday Dad ❤️</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
-      text-align: center;
-      padding: 40px;
-    }
-    .card {
-      max-width: 600px;
-      margin: auto;
-      background: #1e293b;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-    }
-    button {
-      margin-top: 20px;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 10px;
-      background: #38bdf8;
-      font-size: 16px;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>Happy Birthday 🎉</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at top, #0f172a, #020617);
+    color: white;
+    text-align: center;
+    overflow-x: hidden;
+    animation: pageFade 1.6s ease;
+  }
+
+  @keyframes pageFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .container {
+    max-width: 720px;
+    margin: auto;
+    padding: 70px 20px;
+  }
+
+  h1 {
+    font-size: 2.6rem;
+    animation: fadeDown 1.2s ease;
+  }
+
+  .photo {
+    width: 240px;
+    height: 240px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin: 30px 0;
+    box-shadow: 0 0 40px rgba(56,189,248,0.4);
+    transition: opacity 1s ease;
+  }
+
+  .card {
+    background: rgba(30,41,59,0.85);
+    padding: 34px;
+    border-radius: 22px;
+    margin-top: 35px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 1.2s ease;
+  }
+
+  .card.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  button {
+    margin-top: 26px;
+    padding: 15px 28px;
+    font-size: 16px;
+    border-radius: 16px;
+    border: none;
+    background: linear-gradient(135deg, #38bdf8, #818cf8);
+    color: #020617;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  button:hover {
+    transform: scale(1.08);
+    box-shadow: 0 10px 30px rgba(56,189,248,0.4);
+  }
+
+  #gift {
+    margin-top: 22px;
+    font-size: 1.05rem;
+    opacity: 0;
+    transition: opacity 1.4s ease;
+  }
+
+  #gift.show {
+    opacity: 1;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-25px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Confetti */
+  .confetti {
+    position: fixed;
+    top: -10px;
+    width: 10px;
+    height: 10px;
+    animation: fall linear infinite;
+    z-index: 999;
+  }
+
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(360deg); }
+  }
+</style>
 </head>
+
 <body>
 
-  <div class="card">
-    <h1>🎉 Happy Birthday Dad 🎉</h1>
-    <p>I got you something a little different this year.</p>
-    <button onclick="alert('Check your Trading212 account 😉')">
-      Click me
-    </button>
+<div class="container">
+  <h1>🎉 Happy Birthday Dad 🎉</h1>
+
+  <!-- Slideshow image -->
+  <img id="slideshow" src="images/1.jpeg" class="photo">
+
+  <div class="card" id="card">
+    <p>This year I wanted to do something a little different.</p>
+    <p>Something for your future 📈</p>
+
+    <button onclick="reveal()">Reveal your gift 🎁</button>
+
+    <p id="gift">
+      I bought you shares in a tech company I know you’ll love ❤️
+    </p>
   </div>
+</div>
+
+<!-- Music -->
+<audio id="music" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  /* Card entrance */
+  setTimeout(() => {
+    document.getElementById("card").classList.add("show");
+  }, 1200);
+
+  /* Slideshow logic */
+  let current = 1;
+  const total = 17;
+  const slide = document.getElementById("slideshow");
+
+  setInterval(() => {
+    current = current % total + 1;
+    slide.style.opacity = 0;
+
+    setTimeout(() => {
+      slide.src = `images/${current}.jpeg`;
+      slide.style.opacity = 1;
+    }, 600);
+  }, 3000);
+
+  /* Reveal action */
+  const music = document.getElementById("music");
+
+  function reveal() {
+    document.getElementById("gift").classList.add("show");
+
+    // Start music with fade-in
+    music.volume = 0;
+    music.play();
+
+    let vol = 0;
+    const fade = setInterval(() => {
+      if (vol < 0.5) {
+        vol += 0.02;
+        music.volume = vol;
+      } else {
+        clearInterval(fade);
+      }
+    }, 120);
+
+    launchConfetti();
+  }
+
+  /* Confetti */
+  function launchConfetti() {
+    for (let i = 0; i < 140; i++) {
+      const c = document.createElement("div");
+      c.className = "confetti";
+      c.style.left = Math.random() * 100 + "vw";
+      c.style.background = `hsl(${Math.random() * 360},100%,60%)`;
+      c.style.animationDuration = Math.random() * 3 + 2 + "s";
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 5000);
+    }
+  }
+</script>
 
 </body>
 </html>
